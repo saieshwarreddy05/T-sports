@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>T Sports Live</title>
+    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+    <style>
+        body { text-align: center; font-family: Arial, sans-serif; background-color: #111; color: white; }
+        .video-container { margin-top: 20px; }
+        video { width: 90%; max-width: 800px; border-radius: 10px; }
+        button { margin-top: 20px; padding: 10px 20px; font-size: 16px; cursor: pointer; background: #e50914; color: white; border: none; border-radius: 5px; }
+    </style>
+</head>
+<body>
+
+    <h1>T Sports Live</h1>
+    <p>Enjoy live sports action </p>
+
+    <!-- Video Player -->
+    <div class="video-container">
+        <video id="video" controls autoplay></video>
+    </div>
+
+    <script>
+        var video = document.getElementById("video");
+        var videoSrc = "https://live.tsports.com/mobile_hls/tsports_live_2/playlist.m3u8"; // Replace with actual T Sports M3U8 URL
+
+        if (Hls.isSupported()) {
+            var hls = new Hls();
+            hls.loadSource(videoSrc);
+            hls.attachMedia(video);
+            hls.on(Hls.Events.MANIFEST_PARSED, function() {
+                video.play();
+            });
+        } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+            video.src = videoSrc;
+            video.addEventListener('loadedmetadata', function() {
+                video.play();
+            });
+        }
+    </script>
+
+</body>
+</html>
