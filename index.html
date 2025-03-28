@@ -3,41 +3,99 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>T Sports Live</title>
+    <title>Live Sports Stream</title>
     <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
     <style>
-        body { text-align: center; font-family: Arial, sans-serif; background-color: #111; color: white; }
-        .video-container { margin-top: 20px; }
-        video { width: 90%; max-width: 800px; border-radius: 10px; }
-        button { margin-top: 20px; padding: 10px 20px; font-size: 16px; cursor: pointer; background: #e50914; color: white; border: none; border-radius: 5px; }
+        body {
+            text-align: center;
+            font-family: Arial, sans-serif;
+            background-color: #111;
+            color: white;
+        }
+        .video-container {
+            margin-top: 20px;
+        }
+        video {
+            width: 90%;
+            max-width: 800px;
+            border-radius: 10px;
+        }
+        .buttons {
+            margin-top: 20px;
+        }
+        button {
+            margin: 10px;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            background: #e50914;
+            color: white;
+            border: none;
+            border-radius: 5px;
+        }
+        input[type="text"] {
+            margin-top: 10px;
+            padding: 8px;
+            width: 80%;
+            max-width: 500px;
+            border-radius: 5px;
+            border: none;
+        }
     </style>
 </head>
 <body>
 
-    <h1>T Sports Live</h1>
-    <p>Enjoy live sports action </p>
+    <h1>Live Sports Stream</h1>
+    <p>Watch Willow TV, T Sports, or your own stream!</p>
 
     <!-- Video Player -->
     <div class="video-container">
         <video id="video" controls autoplay></video>
     </div>
 
+    <!-- Buttons and Input -->
+    <div class="buttons">
+        <button onclick="playStream('https://amg01269-amg01269c1-firetv-us-5377.playouts.now.amagi.tv/playlist.m3u8')">Watch Willow TV</button>
+        <button onclick="playStream('PASTE_T_SPORTS_M3U8_LINK_HERE')">Watch T Sports</button>
+        <br>
+        <input type="text" id="customUrl" placeholder="Enter your own M3U8 link here">
+        <br>
+        <button onclick="playCustomStream()">Watch My Link</button>
+    </div>
+
     <script>
         var video = document.getElementById("video");
-        var videoSrc = "https://live.tsports.com/mobile_hls/tsports_live_2/playlist.m3u8"; // Replace with actual T Sports M3U8 URL
+        var hls;
 
-        if (Hls.isSupported()) {
-            var hls = new Hls();
-            hls.loadSource(videoSrc);
-            hls.attachMedia(video);
-            hls.on(Hls.Events.MANIFEST_PARSED, function() {
-                video.play();
-            });
-        } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
-            video.src = videoSrc;
-            video.addEventListener('loadedmetadata', function() {
-                video.play();
-            });
+        function playStream(url) {
+            if (hls) {
+                hls.destroy(); // Clean previous instance
+            }
+
+            if (Hls.isSupported()) {
+                hls = new Hls();
+                hls.loadSource(url);
+                hls.attachMedia(video);
+                hls.on(Hls.Events.MANIFEST_PARSED, function () {
+                    video.play();
+                });
+            } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+                video.src = url;
+                video.addEventListener('loadedmetadata', function () {
+                    video.play();
+                });
+            } else {
+                alert("HLS is not supported in your browser.");
+            }
+        }
+
+        function playCustomStream() {
+            const customUrl = document.getElementById("customUrl").value.trim();
+            if (customUrl) {
+                playStream(customUrl);
+            } else {
+                alert("Please enter a valid M3U8 link.");
+            }
         }
     </script>
 
